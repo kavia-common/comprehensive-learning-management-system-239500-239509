@@ -1,0 +1,4 @@
+{
+    "command": "cd db_visualizer && npm install",
+    "working_directory": "/home/kavia/workspace/code-generation/comprehensive-learning-management-system-239500-239509/lms_database"
+}
