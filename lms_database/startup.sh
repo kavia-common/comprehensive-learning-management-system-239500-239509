@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # Minimal PostgreSQL startup script with full paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${SCRIPT_DIR}"
+
 DB_NAME="myapp"
 DB_USER="appuser"
 DB_PASSWORD="dbuser123"
@@ -150,6 +153,14 @@ echo ""
 
 echo "Environment variables saved to db_visualizer/postgres.env"
 echo "To use with Node.js viewer, run: source db_visualizer/postgres.env"
+
+echo "Applying LMS schema + seed data (idempotent)..."
+chmod +x "${SCRIPT_DIR:-.}/init_lms_schema_and_seed.sh" 2>/dev/null || true
+# Use the connection string in db_connection.txt as the single source of truth.
+./init_lms_schema_and_seed.sh || {
+    echo "⚠ LMS schema initialization failed. Database is still running."
+    exit 1
+}
 
 echo "To connect to the database, use one of the following commands:"
 echo "psql -h localhost -U ${DB_USER} -d ${DB_NAME} -p ${DB_PORT}"
